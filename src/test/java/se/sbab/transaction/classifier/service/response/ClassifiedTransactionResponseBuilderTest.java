@@ -49,6 +49,24 @@ class ClassifiedTransactionResponseBuilderTest {
   }
 
   @Test
+  void verifyReturnsClassifiedTransactionsWithinDateRangeAndDatesIncluded() {
+    LocalDate startDate = LocalDate.of(2025, 1, 1);
+    LocalDate endDate = LocalDate.of(2025, 12, 31);
+    var transaction = buildTransactionForDate(LocalDate.of(2025, 8, 10));
+    var transactionOnStartDate = buildTransactionForDate(LocalDate.of(2025, 1, 1));
+    var transactionOnEndDate = buildTransactionForDate(LocalDate.of(2025, 12, 31));
+
+
+    when(jsonTransactionMapper.loadJson()).thenReturn(List.of(transaction, transactionOnStartDate, transactionOnEndDate));
+    when(jsonClassificationMapper.loadJson()).thenReturn(Map.of("1", "Test Category"));
+
+    List<ClassifiedTransaction> result = responseBuilder.build(startDate, endDate);
+
+    assertEquals(3, result.size());
+    assertEquals("Test Category", result.getFirst().category());
+  }
+
+  @Test
   void verifyReturnsEmptyListWhenNoTransactionsInDateRange() {
     LocalDate startDate = LocalDate.of(2025, 1, 1);
     LocalDate endDate = LocalDate.of(2025, 12, 31);

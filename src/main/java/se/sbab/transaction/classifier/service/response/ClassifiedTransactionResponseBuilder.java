@@ -39,8 +39,8 @@ public class ClassifiedTransactionResponseBuilder {
   private boolean validateDates(Transaction transaction, LocalDate startDate, LocalDate endDate) {
     return Objects.nonNull(startDate) &&
         Objects.nonNull(endDate) &&
-        transaction.transactionDate().isAfter(startDate) &&
-        transaction.transactionDate().isBefore(endDate);
+        !transaction.transactionDate().isBefore(startDate) &&
+        !transaction.transactionDate().isAfter(endDate);
   }
 
   private ClassifiedTransaction buildClassifiedTransaction(Transaction transaction,
